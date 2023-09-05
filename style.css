@@ -1,0 +1,19 @@
+@property --size {
+	syntax: "<length>";
+	initial: .45rem;
+	inherits: true;
+}
+
+main {
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
+
+body{
+    width: 100%;
+    margin: 0;
+    background-color: black;
+}
+
+
