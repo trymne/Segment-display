@@ -60,10 +60,16 @@ class SgmntDisplay extends HTMLElement {
               this.nm9 = 's4 s5 s3 s8 s13';
               this.nm0 = 's9 s13';
               this.blank = 's1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 s12 s13'
+
+              //the beginning used for the svg(segments) in a regular size
               this.svgStartReg = `<svg
               class="sgmnt-display"`;
+
+              //the beginning used for the svg(segments) in a regular size
               this.svgStartSm = `<svg
               class="sgmnt-display sgmnt-small"`;
+
+              //the rest of the svg, continuation of "svgStartSm/svgStartReg"
               this.sgmnt = `
         
         viewBox="0 0 200 359"
@@ -146,29 +152,31 @@ class SgmntDisplay extends HTMLElement {
         </defs>
       </svg>
       `;
-
-            this.chDot = ` viewBox="0 0 200 359" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="358.51" fill="currentColor"/>
-            <circle class="sgmnt" cx="100" cy="327" r="20" fill="currentColor"/>
-            </svg>
-            `
-    
-      this.colon = `<svg class="sgmnt-display" width="200" height="359" viewBox="0 0 200 359" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect class="sgmnt-bg" width="200" height="358.51" fill="currentColor"/>
-      <circle class="sgmnt" cx="100" cy="125" r="20" fill="currentColor"/>
-      <circle class="sgmnt" cx="100" cy="227" r="20" fill="currentColor"/>
-      </svg>
-      `
+        //SVG of the dot
+        this.chDot = ` viewBox="0 0 200 359" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect class="sgmnt-bg" width="200" height="358.51" fill="currentColor"/>
+        <circle class="sgmnt" cx="100" cy="327" r="20" fill="currentColor"/>
+        </svg>
+        `
+        //SVG of the colon
+        this.colon = `<svg class="sgmnt-display" width="200" height="359" viewBox="0 0 200 359" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect class="sgmnt-bg" width="200" height="358.51" fill="currentColor"/>
+        <circle class="sgmnt" cx="100" cy="125" r="20" fill="currentColor"/>
+        <circle class="sgmnt" cx="100" cy="227" r="20" fill="currentColor"/>
+        </svg>
+        `
 
         
         this.styles = ' ';
 
+        //container of the web component
         this.container = document.createElement('div');
         this.container.classList.add('sgmnt-container');
 
         this.uptTimeStyle;
         this.styleElement = document.createElement('style');
 
+        //declaring the basic styles of the component
         this.basicStyle = `
 
         .sgmnt-container {
@@ -211,6 +219,8 @@ class SgmntDisplay extends HTMLElement {
 
 
       }
+
+      //checks which character to make
       getChar(i, ch) {
         let style;
         switch (ch) {
@@ -400,6 +410,7 @@ class SgmntDisplay extends HTMLElement {
     const hours = String(now.getHours()).padStart(2, '0');
 
     let text = `${hours}${minutes}${seconds}${day}${fullDate}`;
+    //console.log(text)
     
     if(!this.timeStarted) {
         let dayContainer;
@@ -415,8 +426,8 @@ class SgmntDisplay extends HTMLElement {
             allDatesContainer.classList.add('sgmnt-allDateCnt');
         }
         for (let i = 0; i < text.length; i++) {
-            if(text[i] == ' ' && this.sgmtSmall == false) {
-                console.log('"|" found');
+            if(text[i] == ' ' && this.sgmtSmall == false && day && fullDate) {
+                console.log(i);
                 this.sgmtSmall = true;
                 continue
             }
@@ -428,6 +439,7 @@ class SgmntDisplay extends HTMLElement {
             if(text[i] !== ':') {
                 if (!this.sgmtSmall) {
                     html = this.svgStartReg + this.sgmnt;
+                    console.log("--", i)
                   } else {
                     html = this.svgStartSm + this.sgmnt;
                   }
@@ -447,11 +459,11 @@ class SgmntDisplay extends HTMLElement {
                     console.log('+++++')
                     allDatesContainer.appendChild(dayContainer);
                 }
-                continue
+                if((day || fullDate) && this.sgmtSmall) continue
             }
 
             if(this.sgmtSmall && (!isNaN(text[i]) || text[i] === '.')) {
-                
+                console.log('test')
                 console.log(i)
                 if(text[i] === '.') {
                     let svg =  this.svgStartSm + this.chDot;
@@ -483,7 +495,6 @@ class SgmntDisplay extends HTMLElement {
 
         let styles = this.basicStyle + this.uptTimeStyle;
         this.styleElement.textContent = styles
-        console.log(hours, minutes,seconds);
         this.timeStarted = true;
 
     }
